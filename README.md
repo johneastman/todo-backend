@@ -28,4 +28,4 @@ The backend component for the [todo](https://github.com/johneastman/todo) mobile
     ```python
     from app import app as flask
     ```
-1. Back on the web app configuration page, I clicked Reload jeastman.pythonanywhere.com
+1. Back on the dashboard, click "Web" and then click `Reload jeastman.pythonanywhere.com`
