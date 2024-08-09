@@ -9,6 +9,9 @@ app = Flask(__name__)
 def lists(username):
     project_folder = os.path.expanduser(app.root_path)
     file_path = os.path.join(project_folder, f"{username}.json")
+    if request.args.get("checkUserExists") == "true":
+        body = json.dumps({username: "true" if os.path.isfile(file_path) else "false"})
+        return make_response(body, 200)
 
     methods = {
         "GET": get,

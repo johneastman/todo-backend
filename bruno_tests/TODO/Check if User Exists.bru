@@ -1,0 +1,15 @@
+meta {
+  name: Check if User Exists
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://127.0.0.1:5000/lists/test?checkUserExists=true
+  body: none
+  auth: none
+}
+
+params:query {
+  checkUserExists: true
+}
