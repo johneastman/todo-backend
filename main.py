@@ -9,8 +9,9 @@ app = Flask(__name__)
 def lists(username):
     project_folder = os.path.expanduser(app.root_path)
     file_path = os.path.join(project_folder, f"{username}.json")
+
     if request.args.get("checkUserExists") == "true":
-        body = json.dumps({username: "true" if os.path.isfile(file_path) else "false"})
+        body = json.dumps({username: os.path.isfile(file_path)})
         return make_response(body, 200)
 
     methods = {
@@ -32,7 +33,7 @@ def get(file_path: str) -> Response:
         return make_response({"message": "File not found"}, 404)
 
 
-def save(file_path):
+def save(file_path: str) -> Response:
     try:
         with open(file_path, "w") as file:
             file_content = json.dumps(request.json)
@@ -42,7 +43,7 @@ def save(file_path):
         return make_response({"message": str(e)}, 500)
 
 
-def delete(file_path):
+def delete(file_path: str) -> Response:
     try:
         os.remove(file_path)
         return make_response({"message": "Data successfully deleted"}, 200)
