@@ -26,6 +26,6 @@ The backend component for the [todo](https://github.com/johneastman/todo) mobile
 
 1. Make sure the last line of `jeastman_pythonanywhere_com_wsgi.py` is this:
     ```python
-    from main import app as flask
+    from main import app as application
     ```
 1. Back on the dashboard, click "Web" and then click `Reload jeastman.pythonanywhere.com`

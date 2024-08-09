@@ -34,7 +34,7 @@ def test_check_if_user_exists_when_user_exists(client):
     assert response.status_code == 200
 
     body = json.loads(response.data)
-    assert body["test"]
+    assert body["test"] == True
 
 
 def test_check_if_user_exists_when_user_does_not_exists(client):
@@ -42,7 +42,7 @@ def test_check_if_user_exists_when_user_does_not_exists(client):
     assert response.status_code == 200
 
     body = json.loads(response.data)
-    assert not body["invalidUser"]
+    assert body["invalidUser"] == False
 
 
 def test_get_user_data(client):

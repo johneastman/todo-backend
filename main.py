@@ -11,7 +11,7 @@ def lists(username):
     file_path = os.path.join(project_folder, f"{username}.json")
 
     if request.args.get("checkUserExists") == "true":
-        body = json.dumps({username: os.path.isfile(file_path)})
+        body = {username: os.path.isfile(file_path)}
         return make_response(body, 200)
 
     methods = {
