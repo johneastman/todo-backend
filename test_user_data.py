@@ -29,8 +29,16 @@ def runner(application):
     return app.test_cli_runner()
 
 
+def test_get_all_users(client):
+    response = client.get("/users")
+    assert response.status_code == 200
+
+    body = json.loads(response.data)
+    assert body == ["test"]
+
+
 def test_check_if_user_exists_when_user_exists(client):
-    response = client.get("/lists/test", query_string={"checkUserExists": "true"})
+    response = client.get("/users/test", query_string={"checkUserExists": "true"})
     assert response.status_code == 200
 
     body = json.loads(response.data)
@@ -38,7 +46,7 @@ def test_check_if_user_exists_when_user_exists(client):
 
 
 def test_check_if_user_exists_when_user_does_not_exists(client):
-    response = client.get("/lists/invalidUser", query_string={"checkUserExists": "true"})
+    response = client.get("/users/invalidUser", query_string={"checkUserExists": "true"})
     assert response.status_code == 200
 
     body = json.loads(response.data)
@@ -46,7 +54,7 @@ def test_check_if_user_exists_when_user_does_not_exists(client):
 
 
 def test_get_user_data(client):
-    response = client.get("/lists/test")
+    response = client.get("/users/test")
     assert response.status_code == 200
 
     body = json.loads(response.data)
@@ -55,7 +63,7 @@ def test_get_user_data(client):
 
 
 def test_get_user_data_does_not_exist(client):
-    response = client.get("/lists/invalidUser")
+    response = client.get("/users/invalidUser")
     assert response.status_code == 404
 
     body = json.loads(response.data)
@@ -63,7 +71,7 @@ def test_get_user_data_does_not_exist(client):
 
 
 def test_save_user_data(client):
-    response = client.post("/lists/test2", json={
+    response = client.post("/users/test2", json={
         "listsJSON": [
             {
               "name": "B",
@@ -97,7 +105,7 @@ def test_save_user_data(client):
 
 
 def test_save_user_data_invalid_json(client):
-    response = client.post("/lists/test2", data='{', content_type='application/json')
+    response = client.post("/users/test2", data='{', content_type='application/json')
 
     assert response.status_code == 500
 
@@ -106,7 +114,7 @@ def test_save_user_data_invalid_json(client):
 
 
 def test_save_user_data_invalid_media_type(client):
-    response = client.post("/lists/test2", data='abc')
+    response = client.post("/users/test2", data='abc')
 
     assert response.status_code == 500
 
@@ -115,7 +123,7 @@ def test_save_user_data_invalid_media_type(client):
 
 
 def test_delete_user_data(client):
-    response = client.delete("/lists/test2")
+    response = client.delete("/users/test2")
 
     assert response.status_code == 200
 
@@ -124,7 +132,7 @@ def test_delete_user_data(client):
 
 
 def test_delete_user_data_does_not_exist(client):
-    response = client.delete("/lists/invalidUser")
+    response = client.delete("/users/invalidUser")
 
     assert response.status_code == 404
 

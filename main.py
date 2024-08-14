@@ -5,8 +5,18 @@ import json
 app = Flask(__name__)
 
 
-@app.route("/lists/<username>", methods=["GET", "POST", "DELETE"])
-def lists(username):
+@app.route("/users")
+def get_users():
+    user_data = map(
+        lambda filename: filename.split(".")[0],
+        filter(
+            lambda filename: filename.endswith("json"),
+            os.listdir()))
+    return make_response(list(user_data), 200)
+
+
+@app.route("/users/<username>", methods=["GET", "POST", "DELETE"])
+def get_user(username):
     project_folder = os.path.expanduser(app.root_path)
     file_path = os.path.join(project_folder, f"{username}.json")
 
