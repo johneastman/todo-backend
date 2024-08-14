@@ -12,6 +12,7 @@ def get_users():
         filter(
             lambda filename: filename.endswith("json"),
             os.listdir()))
+    print(user_data)
     return make_response(list(user_data), 200)
 
 
