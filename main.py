@@ -7,13 +7,14 @@ app = Flask(__name__)
 
 @app.route("/users")
 def get_users():
-    user_data = map(
-        lambda filename: filename.split(".")[0],
-        filter(
-            lambda filename: filename.endswith("json"),
-            os.listdir()))
+    user_data = list(
+        map(
+            lambda filename: filename.split(".")[0],
+            filter(
+                lambda filename: filename.endswith("json"),
+                os.listdir())))
     print(user_data)
-    return make_response(list(user_data), 200)
+    return make_response(user_data, 200)
 
 
 @app.route("/users/<username>", methods=["GET", "POST", "DELETE"])
