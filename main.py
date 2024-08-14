@@ -7,12 +7,14 @@ app = Flask(__name__)
 
 @app.route("/users")
 def get_users():
+    project_folder = os.path.expanduser(app.root_path)
+
     user_data = list(
         map(
             lambda filename: filename.split(".")[0],
             filter(
                 lambda filename: filename.endswith("json"),
-                os.listdir())))
+                os.listdir(project_folder))))
     print(user_data)
     return make_response(user_data, 200)
 
