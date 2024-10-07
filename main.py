@@ -1,8 +1,11 @@
 from flask import Flask, Response, request, make_response
+from dotenv import dotenv_values
+
 import os
 import json
 
 app = Flask(__name__)
+config = dotenv_values()
 
 
 @app.route("/users")
@@ -35,6 +38,11 @@ def get_user(username):
     }
 
     return methods[request.method](file_path)
+
+
+@app.route("/config", methods=["GET"])
+def get_config():
+    return make_response(config, 200)
 
 
 def get(file_path: str) -> Response:

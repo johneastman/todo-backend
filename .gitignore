@@ -1,6 +1,7 @@
 # Project files
 *.json
 .idea
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
