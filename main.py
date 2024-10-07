@@ -19,8 +19,10 @@ db = connector.connect(
 )
 
 setup_cursor = db.cursor()
-setup_cursor.execute("create database if not exists todo")
-setup_cursor.execute("use todo")
+
+db_name = config.get("DB_NAME")
+setup_cursor.execute(f"create database if not exists {db_name}")
+setup_cursor.execute(f"use {db_name}")
 setup_cursor.execute(
     "create table if not exists users(id int primary key auto_increment, name text not null, data text not null)")
 setup_cursor.close()
@@ -65,7 +67,6 @@ def get_config():
 
 
 def get(username: str) -> Response:
-    print("GET")
     user_cursor = db.cursor(buffered=True)
     user_cursor.execute(
         "select data from users where name = %s",
@@ -73,7 +74,6 @@ def get(username: str) -> Response:
     )
     result = user_cursor.fetchone()
     user_cursor.close()
-    print(result)
 
     if result is None:
         return make_response({"message": "User does not exist"}, 404)
