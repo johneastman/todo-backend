@@ -1,5 +1,3 @@
-import os
-
 from main import app
 
 import json

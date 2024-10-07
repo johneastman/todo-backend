@@ -2,14 +2,7 @@
 The backend component for the [todo](https://github.com/johneastman/todo) mobile app.
 
 ## Local Setup
-1. Install MySQL dependencies:
-   ```bash
-   brew install mysql pkg-config
-   ```
-2. Install `flask_mysqldb`:
-   ```
-   pip install flask_mysqldb
-   ```
+1. Download [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
 
 ## Deploying to Pythonanywhere
 
