@@ -5,27 +5,26 @@ import os
 import json
 
 app = Flask(__name__)
-config = dotenv_values()
+
+ROOT_DIR = os.path.expanduser(app.root_path)
+
+config = dotenv_values(os.path.join(ROOT_DIR, ".env"))
 
 
 @app.route("/users")
 def get_users():
-    project_folder = os.path.expanduser(app.root_path)
-
     user_data = list(
         map(
             lambda filename: filename.split(".")[0],
             filter(
                 lambda filename: filename.endswith("json"),
-                os.listdir(project_folder))))
-    print(user_data)
+                os.listdir(ROOT_DIR))))
     return make_response(user_data, 200)
 
 
 @app.route("/users/<username>", methods=["GET", "POST", "DELETE"])
 def get_user(username):
-    project_folder = os.path.expanduser(app.root_path)
-    file_path = os.path.join(project_folder, f"{username}.json")
+    file_path = os.path.join(ROOT_DIR, f"{username}.json")
 
     if request.args.get("checkUserExists") == "true":
         body = {username: os.path.isfile(file_path)}
