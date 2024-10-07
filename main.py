@@ -10,6 +10,7 @@ app = Flask(__name__)
 ROOT_DIR = os.path.expanduser(app.root_path)
 
 config = dotenv_values(os.path.join(ROOT_DIR, ".env"))
+print(config)
 
 db = connector.connect(
   host=config.get("DB_HOST"),
