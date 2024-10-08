@@ -14,19 +14,25 @@ print("Environment data", config)
 
 
 # Database Setup
-def connect_to_db(db_name):
-    return connector.connect(
+def connect_to_db(name):
+    """Initiates a connection to the database
+
+    :param name: name of the database
+    :type name: str
+    :return: database object and cursor
+    :rtype: (PooledMySQLConnection | MySQLConnectionAbstract,  MySQLCursorAbstract)
+    """
+    db = connector.connect(
         host=config.get("DB_HOST"),
         user=config.get("DB_USER"),
         password=config.get("DB_PASSWORD"),
-        database=db_name
+        database=name
     )
+    return db, db.cursor(buffered=True)
 
 
 db_name = config.get("DB_NAME")
-setup_db = connect_to_db(db_name)
-
-setup_cursor = setup_db.cursor()
+setup_db, setup_cursor = connect_to_db(db_name)
 
 setup_cursor.execute(f"create database if not exists {db_name}")
 setup_cursor.execute(f"use {db_name}")
@@ -39,8 +45,7 @@ setup_db.disconnect()
 
 @app.route("/users")
 def get_users():
-    get_users_db = connect_to_db(db_name)
-    get_users_cursor = get_users_db.cursor(buffered=True)
+    get_users_db, get_users_cursor = connect_to_db(db_name)
     get_users_cursor.execute("select name from users")
     results = get_users_cursor.fetchall()
 
@@ -54,8 +59,7 @@ def get_users():
 def get_user(username):
     if request.args.get("checkUserExists") == "true":
 
-        get_user_db = connect_to_db(db_name)
-        get_user_cursor = get_user_db.cursor(buffered=True)
+        get_user_db, get_user_cursor = connect_to_db(db_name)
         get_user_cursor.execute(
             "select * from users where name = %s",
             (username,)
@@ -84,8 +88,7 @@ def get_config():
 
 def get(username: str) -> Response:
     try:
-        get_db = connect_to_db(db_name)
-        get_cursor = get_db.cursor(buffered=True)
+        get_db, get_cursor = connect_to_db(db_name)
         get_cursor.execute(
             "select data from users where name = %s",
             (username,)
@@ -109,8 +112,7 @@ def save(username: str) -> Response:
     try:
         user_data = json.dumps(request.json)
 
-        save_db = connect_to_db(db_name)
-        save_cursor = save_db.cursor(buffered=True)
+        save_db, save_cursor = connect_to_db(db_name)
 
         save_cursor.execute("select * from users where name = %s", (username,))
         result = save_cursor.fetchone()
@@ -130,13 +132,13 @@ def save(username: str) -> Response:
 
         return make_response({"message": "Data saved successfully"}, 200)
     except Exception as e:
-        return make_response({"message": str(e)}, 500)
+        print(e)
+        return make_response({"message": "Failed to save user data"}, 500)
 
 
 def delete(username: str) -> Response:
     try:
-        delete_db = connect_to_db(db_name)
-        delete_cursor = delete_db.cursor(buffered=True)
+        delete_db, delete_cursor = connect_to_db(db_name)
 
         # Check if the user exists.
         delete_cursor.execute("select * from users where name = %s", (username,))
@@ -155,7 +157,8 @@ def delete(username: str) -> Response:
         return make_response({"message": "Data successfully deleted"}, 200)
 
     except Exception as e:
-        return make_response({"message": "Failed to "}, 404)
+        print(e)
+        return make_response({"message": "Failed to delete data"}, 404)
 
 
 if __name__ == "__main__":
