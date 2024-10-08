@@ -13,3 +13,16 @@ get {
 params:query {
   checkUserExists: true
 }
+
+tests {
+  test("Response Code is 200", () => {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("Response body structure is correct", () => {
+    const body = res.body;
+    expect(body.exists).to.equal(true);
+    expect(body.username).to.equal("test");
+  });
+  
+}
