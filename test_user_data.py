@@ -40,7 +40,8 @@ def test_check_if_user_exists_when_user_exists(client):
     assert response.status_code == 200
 
     body = json.loads(response.data)
-    assert body["test"] == True
+    assert body["username"] == "test"
+    assert body["exists"] == True
 
 
 def test_check_if_user_exists_when_user_does_not_exists(client):
@@ -48,7 +49,8 @@ def test_check_if_user_exists_when_user_does_not_exists(client):
     assert response.status_code == 200
 
     body = json.loads(response.data)
-    assert body["invalidUser"] == False
+    assert body["username"] == "invalidUser"
+    assert body["exists"] == False
 
 
 def test_get_user_data(client):
@@ -65,7 +67,7 @@ def test_get_user_data_does_not_exist(client):
     assert response.status_code == 404
 
     body = json.loads(response.data)
-    assert body["message"] == "File not found"
+    assert body["message"] == "User does not exist"
 
 
 def test_save_user_data(client):
@@ -135,4 +137,4 @@ def test_delete_user_data_does_not_exist(client):
     assert response.status_code == 404
 
     body = json.loads(response.data)
-    assert body["message"] == "File not found"
+    assert body["message"] == "User not found"
