@@ -39,13 +39,14 @@ jobs:
     - name: Create environment file
       run: |
         cat > .env << EOF
-        DB_HOST=127.0.0.1
+        DB_HOST=localhost
         DB_USER=root
         DB_PASSWORD=password
         DB_NAME=todo
         EOF
     - name: Insert Test Data
       run: |
+        mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "use todo;"
         mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "insert into users (name, data) values ('test', '{}');"
     - name: Test with pytest
       run: |
