@@ -36,7 +36,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Create test data
+    - name: Create environment file
       run: |
         cat > .env << EOF
         DB_HOST=127.0.0.1
@@ -44,133 +44,9 @@ jobs:
         DB_PASSWORD=password
         DB_NAME=todo
         EOF
-
-        cat > test.json << EOF
-        {
-          "listsJSON": [
-            {
-              "name": "A",
-              "listType": "List",
-              "defaultNewItemPosition": "bottom",
-              "isSelected": false,
-              "items": [
-                {
-                  "name": "1",
-                  "notes": "this note is very important.",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": true
-                },
-                {
-                  "name": "2",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                },
-                {
-                  "name": "3",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                },
-                {
-                  "name": "4",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                },
-                {
-                  "name": "5",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                }
-              ],
-              "isLocked": false
-            },
-            {
-              "name": "B",
-              "listType": "Shopping",
-              "defaultNewItemPosition": "bottom",
-              "isSelected": false,
-              "items": [
-                {
-                  "name": "Groceries",
-                  "notes": "we need food. we're very hungry. but we are also very POOR!\n\nnew line!",
-                  "quantity": 3,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                }
-              ],
-              "isLocked": false
-            },
-            {
-              "name": "C",
-              "listType": "To-Do",
-              "defaultNewItemPosition": "bottom",
-              "isSelected": false,
-              "items": [
-                {
-                  "name": "10",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                },
-                {
-                  "name": "12",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                },
-                {
-                  "name": "14",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": true
-                },
-                {
-                  "name": "16",
-                  "notes": "",
-                  "quantity": 1,
-                  "isComplete": false,
-                  "isSelected": false,
-                  "isLocked": false
-                }
-              ],
-              "isLocked": false
-            },
-            {
-              "name": "D",
-              "listType": "Ordered To-Do",
-              "defaultNewItemPosition": "bottom",
-              "isSelected": false,
-              "items": [],
-              "isLocked": false
-            }
-          ],
-          "settingsJSON": {
-            "isDeveloperModeEnabled": false,
-            "defaultListPosition": "bottom",
-            "defaultListType": "List"
-          }
-        }
-        EOF
+    - name: Insert Test Data
+      run: |
+        mysql -e 'insert into users (name, data) values (\'test\', \'{}\');' -uroot -ppassword
     - name: Test with pytest
       run: |
         pytest
