@@ -46,11 +46,10 @@ jobs:
         EOF
     - name: Show databases
       run: |
-        mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "show databases;"
+        mysql --protocol=tcp --host=localhost --port=3306 --user=root --password=password --execute "show databases;"
     - name: Insert Test Data
       run: |
-        mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "use todo;"
-        mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "insert into users (name, data) values ('test', '{}');"
+        mysql --protocol=tcp --host=localhost --port=3306 --user=root --password=password --execute "use todo; insert into users (name, data) values ('test', '{}');"
     - name: Test with pytest
       run: |
         pytest
