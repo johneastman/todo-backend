@@ -46,7 +46,7 @@ jobs:
         EOF
     - name: Insert Test Data
       run: |
-        mysql -e 'insert into users (name, data) values ("test", "{}");' -uroot -ppassword
+        mysql --protocol=tcp -h localhost -P 3306 -uroot -ppassword -e "insert into users (name, data) values ('test', '{}');"
     - name: Test with pytest
       run: |
         pytest
