@@ -28,31 +28,129 @@ def runner(application):
 
 
 def test_save_user_data(client):
-    response = client.post("/users/test2", json={
+    response = client.post("/users/test", json={
         "listsJSON": [
             {
-              "name": "B",
-              "listType": "Shopping",
-              "defaultNewItemPosition": "bottom",
-              "isSelected": "false",
-              "items": [
-                {
-                  "name": "Groceries",
-                  "notes": "we need food. we're very hungry. but we are also very POOR!\n\nnew line!",
-                  "quantity": 3,
-                  "isComplete": "false",
-                  "isSelected": "false",
-                  "isLocked": "false"
-                }
-              ],
-              "isLocked": "false"
+                "name": "A",
+                "listType": "List",
+                "defaultNewItemPosition": "bottom",
+                "isSelected": "false",
+                "items": [
+                    {
+                        "name": "1",
+                        "notes": "this note is very important.",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "true"
+                    },
+                    {
+                        "name": "2",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    },
+                    {
+                        "name": "3",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    },
+                    {
+                        "name": "4",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    },
+                    {
+                          "name": "5",
+                          "notes": "",
+                          "quantity": 1,
+                          "isComplete": "false",
+                          "isSelected": "false",
+                          "isLocked": "false"
+                    }
+                ],
+                "isLocked": "false"
             },
+            {
+                "name": "B",
+                "listType": "Shopping",
+                "defaultNewItemPosition": "bottom",
+                "isSelected": "false",
+                "items": [
+                    {
+                        "name": "Groceries",
+                        "notes": "we need food. we're very hungry. but we are also very POOR!\n\nnew line!",
+                        "quantity": 3,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    }
+                ],
+                "isLocked": "false"
+            },
+            {
+                "name": "C",
+                "listType": "To-Do",
+                "defaultNewItemPosition": "bottom",
+                "isSelected": "false",
+                "items": [
+                    {
+                        "name": "10",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    },
+                    {
+                        "name": "12",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    },
+                    {
+                        "name": "14",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "true"
+                    },
+                    {
+                        "name": "16",
+                        "notes": "",
+                        "quantity": 1,
+                        "isComplete": "false",
+                        "isSelected": "false",
+                        "isLocked": "false"
+                    }
+                ],
+                "isLocked": "false"
+            },
+            {
+                "name": "D",
+                "listType": "Ordered To-Do",
+                "defaultNewItemPosition": "bottom",
+                "isSelected": "false",
+                "items": [],
+                "isLocked": "false"
+            }
         ],
         "settingsJSON": {
             "isDeveloperModeEnabled": "false",
             "defaultListPosition": "bottom",
             "defaultListType": "List"
-        }
+          }
     })
 
     assert response.status_code == 200
@@ -105,25 +203,25 @@ def test_get_user_data_that_does_not_exist(client):
 
 
 def test_save_user_data_invalid_json(client):
-    response = client.post("/users/test2", data='{', content_type='application/json')
+    response = client.post("/users/test", data='{', content_type='application/json')
 
     assert response.status_code == 500
 
     body = json.loads(response.data)
-    assert body["message"] == "400 Bad Request: The browser (or proxy) sent a request that this server could not understand."
+    assert body["message"] == "Failed to save user data"
 
 
 def test_save_user_data_invalid_media_type(client):
-    response = client.post("/users/test2", data='abc')
+    response = client.post("/users/test", data='abc')
 
     assert response.status_code == 500
 
     body = json.loads(response.data)
-    assert body["message"] == "415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'."
+    assert body["message"] == "Failed to save user data"
 
 
 def test_delete_user_data(client):
-    response = client.delete("/users/test2")
+    response = client.delete("/users/test")
 
     assert response.status_code == 200
 
