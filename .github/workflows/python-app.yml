@@ -47,9 +47,6 @@ jobs:
     - name: Show databases
       run: |
         mysql --protocol=tcp --host=localhost --port=3306 --user=root --password=password --execute "show databases;"
-#    - name: Insert Test Data
-#      run: |
-#        mysql --protocol=tcp --host=localhost --port=3306 --user=root --password=password --execute "use todo; create table if not exists users(id int primary key auto_increment, name text not null, data text not null); insert into users (name, data) values ('test', '{}');"
     - name: Test with pytest
       run: |
         pytest
