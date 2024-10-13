@@ -4,6 +4,10 @@ The backend component for the [todo](https://github.com/johneastman/todo) mobile
 ## Local Setup
 1. Download the latest version of Python from [python.org](https://www.python.org/)
 2. Download [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
+3. Clone this project:
+   ```
+   git clone https://github.com/johneastman/todo-backend.git
+   ```
 
 ## Deploying to Pythonanywhere
 
