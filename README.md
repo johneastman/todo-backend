@@ -8,6 +8,36 @@ The backend component for the [todo](https://github.com/johneastman/todo) mobile
    ```
    git clone https://github.com/johneastman/todo-backend.git
    ```
+4. Navigate to the root directory:
+   ```
+   cd todo-backend
+   ```
+5. Create a virtual environment:
+   ```
+   python3 -m venv env
+   ```
+6. Activate the environment:
+   ```
+   source env/bin/activate
+   ```
+7. Install the dependencies:
+   ```
+   python3 -m pip install -r requirements.txt
+   ```
+8. Create a `.env` file containing the following information. Replace `<USERNAME>` and `<PASSWORD>` with the username and password of your database:
+   ```
+   cat >> .env <<EOF
+   DB_HOST=localhost
+   DB_USER=<USERNAME>
+   DB_PASSWORD=<PASSWORD>
+   DB_NAME=todo
+   EOF
+   ```
+9. Start the application:
+   ```
+   python3 main.py
+   ```
+10. Open a browser and navigate to http://127.0.0.1:5000/users. There won't be any output, but you should get a 200 response status.
 
 ## Deploying to Pythonanywhere
 
