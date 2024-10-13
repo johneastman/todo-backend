@@ -16,23 +16,43 @@ ROOT_DIR = os.path.expanduser(app.root_path)
 config = dotenv_values(os.path.join(ROOT_DIR, ".env"))
 
 
-def db_conn(method):
+def db_conn(initialize=False):
 
-    @wraps(method)
-    def inner(*args, **kwargs):
-        with connector.connect(
-            host=config.get("DB_HOST"),
-            user=config.get("DB_USER"),
-            password=config.get("DB_PASSWORD"),
-            database=config.get("DB_NAME")
-        ) as connection:
-            with connection.cursor(buffered=True) as cursor:
-                return method(connection, cursor, *args, **kwargs)
+    def actual_decorator(method):
 
-    return inner
+        @wraps(method)
+        def inner(*args, **kwargs):
+            database_name = config.get("DB_NAME")
+
+            if initialize:
+                print(f"Database '{database_name}' does not exist. Creating.")
+            else:
+                print(f"Database '{database_name}' exists. Using.")
+
+            base_conn_config = {
+                "host": config.get("DB_HOST"),
+                "user": config.get("DB_USER"),
+                "password": config.get("DB_PASSWORD"),
+            }
+
+            # If the database is being initialized, it will not exist, so
+            # the "database" field should not be included in the connection
+            # configs. However, if the database does exist, include the
+            # database in the configs so the endpoints can connect to it.
+            conn_config = {
+                **base_conn_config,
+                **({} if initialize else {"database": database_name})
+            }
+            print(conn_config)
+
+            with connector.connect(**conn_config) as connection:
+                with connection.cursor(buffered=True) as cursor:
+                    return method(connection, cursor, *args, **kwargs)
+        return inner
+    return actual_decorator
 
 
-@db_conn
+@db_conn(True)
 def setup(
         connection: PooledMySQLConnection | MySQLConnectionAbstract,
         cursor: MySQLCursorAbstract):
@@ -44,13 +64,12 @@ def setup(
     cursor.execute(
         "create table if not exists users(id int primary key auto_increment, name text not null, data text not null)")
 
-
 # Initialize the database
 setup()
 
 
 @app.route("/users")
-@db_conn
+@db_conn()
 def get_users(
         connection: PooledMySQLConnection | MySQLConnectionAbstract,
         cursor: MySQLCursorAbstract):
@@ -61,7 +80,7 @@ def get_users(
 
 
 @app.route("/users/<username>", methods=["GET", "POST", "DELETE"])
-@db_conn
+@db_conn()
 def get_user(
         connection: PooledMySQLConnection | MySQLConnectionAbstract,
         cursor: MySQLCursorAbstract,
