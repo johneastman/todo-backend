@@ -2,7 +2,8 @@
 The backend component for the [todo](https://github.com/johneastman/todo) mobile app.
 
 ## Local Setup
-1. Download [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
+1. Download the latest version of Python from [python.org](https://www.python.org/)
+2. Download [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
 
 ## Deploying to Pythonanywhere
 
