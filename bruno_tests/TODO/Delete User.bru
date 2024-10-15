@@ -1,11 +1,18 @@
 meta {
   name: Delete User
   type: http
-  seq: 6
+  seq: 5
 }
 
 delete {
   url: {{baseUrl}}/users/test
   body: none
   auth: none
+}
+
+tests {
+  test("Response Code is 200", () => {
+    expect(res.status).to.equal(200);
+  });
+  
 }

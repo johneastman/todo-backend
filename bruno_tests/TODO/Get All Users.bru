@@ -1,11 +1,18 @@
 meta {
   name: Get All Users
   type: http
-  seq: 5
+  seq: 4
 }
 
 get {
   url: {{baseUrl}}/users
   body: none
   auth: none
+}
+
+tests {
+  test("Response Code is 200", () => {
+    expect(res.status).to.equal(200);
+  });
+  
 }

@@ -1,7 +1,7 @@
 meta {
   name: Create or Update User
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
@@ -135,4 +135,12 @@ body:json {
       "defaultListType": "List"
     }
   }
+  
+}
+
+tests {
+  test("Response Code is 200", () => {
+    expect(res.status).to.equal(200);
+  });
+  
 }
