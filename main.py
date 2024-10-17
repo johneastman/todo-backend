@@ -1,47 +1,18 @@
 from flask import Flask, Response, request, make_response
 from dotenv import dotenv_values
 from mysql import connector
-from mysql.connector.abstracts import MySQLCursorAbstract, MySQLConnectionAbstract
-from mysql.connector.pooling import PooledMySQLConnection
 
 import os
 import json
 from functools import wraps
-from collections import namedtuple
-from typing import Optional
+
+from database import DatabaseMetadata, get_all_users, get_user_data, update_user, insert_user, delete_user
 
 app = Flask(__name__)
 
 ROOT_DIR = os.path.expanduser(app.root_path)
 
 config = dotenv_values(os.path.join(ROOT_DIR, ".env"))
-
-# Database objects
-User = namedtuple("User", ["id", "name", "data"])
-
-# Database helper methods
-def get_user_data(cursor: MySQLCursorAbstract, username: str) -> Optional[User]:
-    cursor.execute("select * from users where name = %s", (username,))
-    result = cursor.fetchone()
-    return User(*result) if result is not None else None
-
-
-def get_all_users(cursor: MySQLCursorAbstract) -> list[User]:
-    cursor.execute("select * from users")
-    results = cursor.fetchall()
-    return list(map(lambda r: User(*r), results))
-
-
-def insert_user(cursor: MySQLCursorAbstract, username: str, data: str) -> None:
-    cursor.execute("insert into users (name, data) values (%s, %s)", (username, data))
-
-
-def update_user(cursor: MySQLCursorAbstract, username: str, data: str) -> None:
-    cursor.execute("update users set data = %s where name = %s", (data, username))
-
-
-def delete_user(cursor: MySQLCursorAbstract, username: str) -> None:
-    cursor.execute("delete from users where name = %s", (username,))
 
 
 def db_conn(initialize=False):
@@ -74,16 +45,15 @@ def db_conn(initialize=False):
 
             with connector.connect(**conn_config) as connection:
                 with connection.cursor(buffered=True) as cursor:
-                    return method(connection, cursor, *args, **kwargs)
+                    database_metadata = DatabaseMetadata(connection, cursor)
+                    return method(database_metadata, *args, **kwargs)
         return inner
     return actual_decorator
 
 
 @db_conn(True)
-def setup(
-        connection: PooledMySQLConnection | MySQLConnectionAbstract,
-        cursor: MySQLCursorAbstract):
-
+def setup(database_metadata: DatabaseMetadata):
+    cursor = database_metadata.cursor
     db_name = config.get("DB_NAME")
 
     cursor.execute(f"create database if not exists {db_name}")
@@ -97,9 +67,8 @@ setup()
 
 @app.route("/users")
 @db_conn()
-def get_users(
-        connection: PooledMySQLConnection | MySQLConnectionAbstract,
-        cursor: MySQLCursorAbstract):
+def get_users(database_metadata: DatabaseMetadata):
+    cursor = database_metadata.cursor
 
     results = get_all_users(cursor)
     return make_response(list(map(lambda user: user.name, results)), 200)
@@ -107,10 +76,8 @@ def get_users(
 
 @app.route("/users/<username>", methods=["GET", "POST", "DELETE"])
 @db_conn()
-def get_user(
-        connection: PooledMySQLConnection | MySQLConnectionAbstract,
-        cursor: MySQLCursorAbstract,
-        username: str):
+def get_user(database_metadata: DatabaseMetadata, username: str):
+    cursor = database_metadata.cursor
 
     if request.args.get("checkUserExists") == "true":
         result = get_user_data(cursor, username)
@@ -124,7 +91,7 @@ def get_user(
         "DELETE": delete
     }
 
-    return methods[request.method](connection, cursor, username)
+    return methods[request.method](database_metadata, username)
 
 
 @app.route("/config", methods=["GET"])
@@ -132,10 +99,8 @@ def get_config():
     return make_response(config, 200)
 
 
-def get(
-        connection: PooledMySQLConnection | MySQLConnectionAbstract,
-        cursor: MySQLCursorAbstract,
-        username: str) -> Response:
+def get(database_metadata: DatabaseMetadata, username: str) -> Response:
+    cursor = database_metadata.cursor
 
     try:
         result = get_user_data(cursor, username)
@@ -149,7 +114,10 @@ def get(
         return make_response({"message": "Unable to retrieve user data"}, 500)
 
 
-def save(connection: PooledMySQLConnection | MySQLConnectionAbstract, cursor: MySQLCursorAbstract, username: str) -> Response:
+def save(database_metadata: DatabaseMetadata, username: str) -> Response:
+    cursor = database_metadata.cursor
+    connection = database_metadata.connection
+
     try:
         user_data = json.dumps(request.json)
 
@@ -170,10 +138,9 @@ def save(connection: PooledMySQLConnection | MySQLConnectionAbstract, cursor: My
         return make_response({"message": "Failed to save user data"}, 500)
 
 
-def delete(
-        connection: PooledMySQLConnection | MySQLConnectionAbstract,
-        cursor: MySQLCursorAbstract,
-        username: str) -> Response:
+def delete(database_metadata: DatabaseMetadata, username: str) -> Response:
+    cursor = database_metadata.cursor
+    connection = database_metadata.connection
 
     try:
         # Check if the user exists.

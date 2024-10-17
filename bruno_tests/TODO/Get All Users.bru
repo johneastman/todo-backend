@@ -15,4 +15,13 @@ tests {
     expect(res.status).to.equal(200);
   });
   
+  test("Response body structure is correct", () => {
+    const body = res.body;
+    const expectedResponse = ["test"];
+    expect(body.length).to.equal(expectedResponse.length);
+    for (let i = 0; i < expectedResponse.length; i++) {
+      expect(body[i]).to.equal(expectedResponse[i]);
+    }
+  });
+  
 }
