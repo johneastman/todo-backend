@@ -1,11 +1,11 @@
 meta {
-  name: Get Nonexistent User Data
+  name: Update Existing User
   type: http
-  seq: 6
+  seq: 2
 }
 
-get {
-  url: {{baseUrl}}/users/doesNotExist
+post {
+  url: {{baseUrl}}/users/test
   body: json
   auth: none
 }
@@ -139,13 +139,13 @@ body:json {
 }
 
 tests {
-  test("Response Code is 404", () => {
-    expect(res.status).to.equal(404);
+  test("Response Code is 200", () => {
+    expect(res.status).to.equal(200);
   });
   
   test("Response body structure is correct", () => {
     const body = res.body;
-    expect(body.message).to.equal("User does not exist");
+    expect(body.message).to.equal("Data successfully updated");
   });
   
 }

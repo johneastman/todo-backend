@@ -1,5 +1,5 @@
 meta {
-  name: Create or Update User
+  name: Create New User
   type: http
   seq: 1
 }
@@ -145,7 +145,7 @@ tests {
   
   test("Response body structure is correct", () => {
     const body = res.body;
-    expect(body.message).to.equal("Data saved successfully");
+    expect(body.message).to.equal("Data successfully created");
   });
   
 }

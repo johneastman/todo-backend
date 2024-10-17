@@ -121,8 +121,9 @@ def save(database_metadata: DatabaseMetadata, username: str) -> Response:
 
     try:
         user_data = json.dumps(request.json)
+        user_exists = get_user_data(cursor, username) is not None
 
-        if get_user_data(cursor, username) is not None:
+        if user_exists:
             # Update data if a row already exists
             print(f"Updating data for {username}")
             update_user(cursor, username, user_data)
@@ -133,7 +134,9 @@ def save(database_metadata: DatabaseMetadata, username: str) -> Response:
 
         connection.commit()
 
-        return make_response({"message": "Data saved successfully"}, 200)
+        return make_response({
+            "message": "Data successfully updated" if user_exists else "Data successfully created"
+        }, 200)
     except Exception as e:
         print(e)
         return make_response({"message": "Failed to save user data"}, 500)

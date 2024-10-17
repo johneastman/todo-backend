@@ -156,7 +156,7 @@ def test_save_user_data(client):
     assert response.status_code == 200
 
     body = json.loads(response.data)
-    assert body["message"] == "Data saved successfully"
+    assert body["message"] == "Data successfully created"
 
 
 def test_check_if_user_exists(client):
