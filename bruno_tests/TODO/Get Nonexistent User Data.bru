@@ -1,0 +1,151 @@
+meta {
+  name: Get Nonexistent User Data
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/users/doesNotExist
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "listsJSON": [
+      {
+        "name": "A",
+        "listType": "List",
+        "defaultNewItemPosition": "bottom",
+        "isSelected": false,
+        "items": [
+          {
+            "name": "1",
+            "notes": "this note is very important.",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": true
+          },
+          {
+            "name": "2",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          },
+          {
+            "name": "3",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          },
+          {
+            "name": "4",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          },
+          {
+            "name": "5",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          }
+        ],
+        "isLocked": false
+      },
+      {
+        "name": "B",
+        "listType": "Shopping",
+        "defaultNewItemPosition": "bottom",
+        "isSelected": false,
+        "items": [
+          {
+            "name": "Groceries",
+            "notes": "we need food. we're very hungry. but we are also very POOR!\n\nnew line!",
+            "quantity": 3,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          }
+        ],
+        "isLocked": false
+      },
+      {
+        "name": "C",
+        "listType": "To-Do",
+        "defaultNewItemPosition": "bottom",
+        "isSelected": false,
+        "items": [
+          {
+            "name": "10",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          },
+          {
+            "name": "12",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          },
+          {
+            "name": "14",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": true
+          },
+          {
+            "name": "16",
+            "notes": "",
+            "quantity": 1,
+            "isComplete": false,
+            "isSelected": false,
+            "isLocked": false
+          }
+        ],
+        "isLocked": false
+      },
+      {
+        "name": "D",
+        "listType": "Ordered To-Do",
+        "defaultNewItemPosition": "bottom",
+        "isSelected": false,
+        "items": [],
+        "isLocked": false
+      }
+    ],
+    "settingsJSON": {
+      "isDeveloperModeEnabled": false,
+      "defaultListPosition": "bottom",
+      "defaultListType": "List"
+    }
+  }
+  
+}
+
+tests {
+  test("Response Code is 404", () => {
+    expect(res.status).to.equal(404);
+  });
+  
+  test("Response body structure is correct", () => {
+    const body = res.body;
+    expect(body.message).to.equal("User does not exist");
+  });
+  
+}

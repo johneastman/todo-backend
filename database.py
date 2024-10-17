@@ -1,6 +1,5 @@
 from collections import namedtuple
 from dataclasses import dataclass
-from functools import wraps
 from typing import Optional
 
 from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract

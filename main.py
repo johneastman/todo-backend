@@ -9,6 +9,7 @@ from functools import wraps
 from database import DatabaseMetadata, get_all_users, get_user_data, update_user, insert_user, delete_user
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 ROOT_DIR = os.path.expanduser(app.root_path)
 
@@ -150,14 +151,13 @@ def delete(database_metadata: DatabaseMetadata, username: str) -> Response:
 
         # If the user does exist, delete their row from the database.
         delete_user(cursor, username)
-
         connection.commit()
 
         return make_response({"message": "Data successfully deleted"}, 200)
 
     except Exception as e:
         print(e)
-        return make_response({"message": "Failed to delete data"}, 404)
+        return make_response({"message": "Failed to delete data"}, 500)
 
 
 if __name__ == "__main__":

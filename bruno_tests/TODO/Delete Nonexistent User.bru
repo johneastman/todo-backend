@@ -1,23 +1,23 @@
 meta {
-  name: Delete User
+  name: Delete Nonexistent User
   type: http
-  seq: 6
+  seq: 7
 }
 
 delete {
-  url: {{baseUrl}}/users/test
+  url: {{baseUrl}}/users/doesNotExist
   body: none
   auth: none
 }
 
 tests {
   test("Response Code is 200", () => {
-    expect(res.status).to.equal(200);
+    expect(res.status).to.equal(404);
   });
   
   test("Response body structure is correct", () => {
     const body = res.body;
-    expect(body.message).to.equal("Data successfully deleted");
+    expect(body.message).to.equal("User not found");
   });
   
 }
